@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
 type FormSummary = {
   id: number | string;
   title: string;
@@ -14,7 +17,7 @@ export default function HomePage() {
   const [forms, setForms] = useState<FormSummary[]>([]);
 
   const loadForms = async () => {
-    const response = await fetch("http://localhost:8000/api/forms");
+    const response = await fetch(`${API_BASE_URL}/api/forms`);
     if (!response.ok) {
       return;
     }
@@ -28,7 +31,7 @@ export default function HomePage() {
 
   const handleCreateForm = async () => {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:8000/api/forms", {
+    const response = await fetch(`${API_BASE_URL}/api/forms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
