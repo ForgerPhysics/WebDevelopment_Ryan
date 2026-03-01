@@ -9,8 +9,7 @@ mod models;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    dotenvy::dotenv().ok();
-
+    dotenvy::dotenv().ok(); 
     let database_url = std::env::var("DATABASE_URL")?;
     let pool = PgPool::connect(&database_url).await?;
 
@@ -41,7 +40,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .with_state(pool);
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8000").await?;
+    
+    let port = std::env::var("PORT").unwrap_or_else(|_| "8000".to_string());
+    let addr = format!("0.0.0.0:{}", port);
+    
+    println!("Listening on {}", addr);
+    let listener = tokio::net::TcpListener::bind(&addr).await?;
     axum::serve(listener, app).await?;
 
     Ok(())
